@@ -14,7 +14,7 @@ Hi, I am Chengjiang, a 3rd-year graduate student in the Department of Computer S
 
 #### [](#Publications)Publications
 1. _**Chengjiang Li**_, Yixin Cao, Lei Hou, Jiaxin Shi, Juanzi Li, Tat-Seng Chua: _**Semi-supervised Entity Alignment via Joint Knowledge Embedding Model and Cross-graph Model**_. in EMNLP 2019: 2723–2732. [[pdf](https://www.aclweb.org/anthology/D19-1274/)]
-1. Yixin Cao, Zhiyuan Liu, **Chengjiang Li**, Zhiyuan Liu, Juanzi Li, Tat-Seng Chua: **Multi-Channel Graph Neural Network for Entity Alignment**. in ACL 2019: 1452-1461. [[pdf](https://www.aclweb.org/anthology/P19-1140/)]
+1. Yixin Cao, Zhiyuan Liu, **Chengjiang Li**, Zhiyuan Liu, Juanzi Li, Tat-Seng Chua: _**Multi-Channel Graph Neural Network for Entity Alignment**_. in ACL 2019: 1452-1461. [[pdf](https://www.aclweb.org/anthology/P19-1140/)]
 1. Hailong Jin, _**Chengjiang Li**_, Jing Zhang, Lei Hou, Juanzi Li, Peng Zhang: _**XLORE2: Large-scale Cross-lingual Knowledge Graph Construction and Application**_. in Data Intelligence 2018: 77-98. [[pdf](http://data-intelligence.org/static/publish/F3/91/60/B195E244F29F275C9E6D16DCC9/XLORE.pdf)]
 1. Yixin Cao, Lei Hou, Juanzi Li, Zhiyuan Liu, _**Chengjiang Li**_, Xu Chen, Tiansi Dong: _**Joint Representation Learning of Cross-lingual Words and Entities via Attentive Distant Supervision**_. in EMNLP 2018: 227-237. [[pdf](http://aclweb.org/anthology/D18-1021)]
 1. Yixin Cao, Jiaxin Shi, Juanzi Li, Zhiyuan Liu, _**Chengjiang Li**_: _**On Modeling Sense Relatedness in Multi-prototype Word Embedding**_. in IJCNLP 2017: 233-242. [[pdf](http://aclweb.org/anthology/I17-1024)]
