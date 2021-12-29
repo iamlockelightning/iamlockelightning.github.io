@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    
+    <title>Hello, world!</title>
+
+    <style>
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-light bg-light d-flex justify-content-start" id="nav_bar">
+      <a href="#" class="btn btn-outline-danger btn-sm">歌词</a>
+      <!-- <a href="#" class="btn btn-outline-success btn-sm">倒计时</a> -->
+      <!-- <a href="#" class="btn btn-outline-warning btn-sm">抽签</a> -->
+      <!-- <a href="#" class="btn btn-outline-primary btn-sm">op 4</a>
+      <a href="#" class="btn btn-outline-dark btn-sm">op 5</a> -->
+    </nav>
+
+    <div class="container-fluid">      
+      <div class="row justify-content-md-center">
+        <div class="col-8">
+          
+          <h3>歌词排版工具</h3>
+          <p>请将歌词<strong>调整</strong>为如下格式的文本，<strong>粘贴</strong>到下方“歌词输入框”，<strong>点击</strong>按钮，即可。<small style="color:red">（方括号为段落标记，支持半/圆角括号[和【；以空行分隔不同页面的内容）</small></p>
+          <pre>- - - 下面为示例👇 - - -
+[V1]
+鹅，鹅，鹅 曲项向天歌
+白毛浮绿水 红掌拨清波
+
+[V2]
+朝辞白帝彩云间 千里江陵一日还
+两岸猿声啼不住 轻舟已过万重山
+- - - 上面为示例👆 - - -</pre>
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="歌词" id="lyrics" style="height: 500px"></textarea>
+            <label for="lyrics">歌词输入框</label>
+          </div>
+          
+          <br/>
+
+          <button type="button" class="btn btn-success" id="generate" onclick="generate_ppt(document.getElementById('lyrics').value);">生成PPT</button>
+          
+        </div>
+      </div>
+
+      
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+    <!-- JSZip JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js" integrity="sha512-xQBQYt9UcgblF6aCMrwU1NkVA7HCXaSN2oq0so80KO+y68M+n64FOcqgav4igHe6D5ObBLIf68DWv+gfBowczg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- PptxGenJS JS -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.9.0/libs/jszip.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.9.0/dist/pptxgen.min.js"></script>
+    
+    <!-- 主逻辑 -->
+    <script type="text/javascript">
+      // 为Date原型添加日期格式化方法
+      Date.prototype.format = function(fmt) {
+          var o = {
+              "M+" : this.getMonth()+1,                 //月份 
+              "d+" : this.getDate(),                    //日 
+              "h+" : this.getHours(),                   //小时 
+              "m+" : this.getMinutes(),                 //分 
+              "s+" : this.getSeconds(),                 //秒 
+              "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+              "S"  : this.getMilliseconds()             //毫秒 
+          };
+          if(/(y+)/.test(fmt)) {
+                  fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+          }
+          for(var k in o) {
+              if(new RegExp("("+ k +")").test(fmt)){
+                  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+              }
+          }
+          return fmt;
+      }
+
+      // 输入解析。移除一些多余的换行、空格
+      function parse_lyrics(text) {
+        let paras = text.trim().replaceAll(/ *(\n *){2,}/g, "\n\n").split("\n\n");
+        console.log("paras: " + paras);
+        let lyrics = [];
+        for (let para of paras) {
+          let ary = para.replaceAll(/ *\n */g, "\n").split("\n");
+          if ((ary[0].startsWith("【") || ary[0].startsWith("】")) && ary[0].length>=2) {
+            ary[0] = "[" + ary[0].substring(1, ary[0].length-1) + "]";
+          }
+          console.log(ary);
+          lyrics.push([ary[0], ary.slice(1).join("\n")]);
+        }
+        return lyrics;
+      }
+
+      // 生成PPT
+      function generate_ppt(text) {
+        let lyrics = parse_lyrics(text);
+        console.log("lyrics: " + lyrics);
+
+        let pptx = new PptxGenJS();
+        pptx.layout = "LAYOUT_16x9"; // 布局：LAYOUT_16x10, LAYOUT_4x3
+
+        for (let para of lyrics) {
+          let slide = pptx.addSlide();
+          slide.background = { color: "000000" };
+
+          slide.addText(para[1], {
+              x: "0%",
+              y: "5%",
+              w: "100%",
+              h: "80%",
+              color: "FFFFFF",
+              lang: "zh-CN",
+              charSpacing: 2, // 字符间距：1-256
+              lineSpacingMultiple: 1.2, // 行间距（倍）：0.0-9.99
+              fontFace: "Heiti",
+              bold: true,
+              fontSize: 32,
+              valign: "top",
+              align: "center",
+          });
+          slide.addText(para[0], {
+              x: "5%",
+              y: "85%",
+              w: "20%",
+              h: "10%",
+              color: "FFFFFF",
+              lang: "zh-CN",
+              charSpacing: 2, // 字符间距：1-256
+              lineSpacingMultiple: 1.2, // 行间距（倍）：0.0-9.99
+              fontFace: "Heiti",
+              bold: true,
+              fontSize: 24,
+              valign: "top",
+              align: "centleer",
+          });
+        }
+        
+        pptx.writeFile({ fileName: "歌词"+(new Date()).format("yyyy-MM-dd")+".pptx" });
+      };
+
+      
+    </script>
+
+  </body>
+</html>
+
+<!-- 
+文档：
+1. Bootstrap：https://getbootstrap.com/docs/5.1/customize/overview/
+2. PptxGenJS：https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create/
+3. - 页面样式文档：https://gitbrent.github.io/PptxGenJS/docs/api-text/
+4. JS string方法：https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+ -->
