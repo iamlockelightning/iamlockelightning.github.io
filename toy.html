@@ -93,20 +93,24 @@
         let paras = text.trim().replaceAll(/ *(\n *){2,}/g, "\n\n").split("\n\n").filter(item => item);
         console.log("paras: " + paras);
         let lyrics = [];
+        let char_cnt = {"你": 0, "祢": 0, "他": 0, "祂": 0};
         for (let para of paras) {
           let ary = para.replaceAll(/ *\n */g, "\n").split("\n");
           console.log(ary);
           lyrics.push([ary[0], ary.slice(1).join("\n"), "(END)"]);
+          for (let key in char_cnt) {
+            char_cnt[key] += (para.match(new RegExp(key, "g")) || []).length;
+          }
         }
         for (let i = 0; i < lyrics.length - 1; i++) {
           lyrics[i][2] = "(" + lyrics[i+1][0] + ")";
         }
-        return [lyrics.length != 0, lyrics];
+        return [lyrics.length != 0, lyrics, char_cnt];
       }
 
       // 生成PPT
       function generate_ppt(text) {
-        let [status, lyrics] = parse_lyrics(text);
+        let [status, lyrics, char_cnt] = parse_lyrics(text);
         if (status) {
           console.log("lyrics:\n" + lyrics);
 
@@ -166,7 +170,7 @@
             });
           }
           
-          alert("请仔细校对一遍");
+          alert("请仔细校对一遍（字符统计：你="+char_cnt["你"]+"，祢="+char_cnt["祢"]+"，他="+char_cnt["他"]+"，祂="+char_cnt["祂"]+"）");
           pptx.writeFile({ fileName: "歌词"+(new Date()).format("yyyy-MM-dd")+".pptx" });
         } else {
           alert("输入错误：lyrics.length == "+lyrics.length);
