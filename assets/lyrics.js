@@ -2283,7 +2283,7 @@ B
 耶稣  祢名超过世上的万名
 天上和地下  所有受造的
 都要俯伏敬拜荣耀祢
-`,
+`
 ];
 
 for (var i = 0; i < lyricsLibrary.length; i++) {
