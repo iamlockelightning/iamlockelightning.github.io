@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌻</text></svg>">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Let's Praise!</title>
+
+    <style>
+    </style>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-light bg-light d-flex justify-content-start" id="nav_bar">
+      <div style="padding-left: 10px;">
+      <a href="/toy" class="btn btn-outline-danger btn-sm">歌词</a>
+      <a href="/count" class="btn btn-outline-success btn-sm">倒计时</a>
+      <!-- <a href="#" class="btn btn-outline-warning btn-sm">抽签</a> -->
+      <!-- <a href="#" class="btn btn-outline-primary btn-sm">op 4</a>
+      <a href="#" class="btn btn-outline-dark btn-sm">op 5</a> -->
+      </div>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 10px;">
+      <div class="row justify-content-md-center">
+        <div class="col-6">
+          
+          <h3>歌词排版工具</h3>
+          <p>请将歌词<strong>调整</strong>为如下格式的文本（使用<code>command+F(ctrl+F)</code>从<strong>歌词库</strong>搜索，单击<strong>复制</strong>），<strong>粘贴</strong>到下方“歌词输入框”，<strong>点击</strong>生成按钮，即可。<small style="color:red">（首行为段落标记；以空行分隔不同页面的内容）</small></p>
+          <pre style="font-size: 10px">- - - 下面为示例👇 - - -
+1
+
+1V1
+鹅，鹅，鹅 曲项向天歌
+白毛浮绿水 红掌拨清波
+
+1V2
+朝辞白帝彩云间 千里江陵一日还
+两岸猿声啼不住 轻舟已过万重山
+- - - 上面为示例👆 - - -</pre>
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="歌词" id="lyrics" style="height: 400px"></textarea>
+            <label for="lyrics">歌词输入框</label>
+          </div>
+          
+          <br/>
+
+          <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+            <button class="btn btn-outline-secondary" type="button" disabled>歌词位置</button>
+
+            <input type="radio" class="btn-check" name="btnradio11" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio1">居中</label>
+          
+            <input type="radio" class="btn-check" name="btnradio11" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio2">置顶</label>
+          </div>
+
+          <div class="btn-group btn-group-sm" role="group" aria-label="Small button group" style="margin-left: 30px;">
+            <button class="btn btn-outline-secondary" type="button" disabled>每页歌词</button>
+
+            <input type="radio" class="btn-check" name="btnradio22" id="btnradio3" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio3">完整</label>
+          
+            <input type="radio" class="btn-check" name="btnradio22" id="btnradio4" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio4">2句</label>
+          </div>
+
+          <br/><br/>
+
+          <button type="button" class="btn btn-success" id="generate" onclick="generate_ppt(document.getElementById('lyrics').value);">生成PPT</button>
+
+          <button type="button" class="btn btn-warning" style="margin-left: 30px;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">歌词库</button>
+          
+        </div>
+
+        
+        <div class="col-3"></div>
+
+        <div class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">歌词库</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <div class="list-group list-group-flush" id="lyricsLibrarySidebar">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+      <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+        <div id="liveToast" class="toast align-items-center border-0" style="background-color: #ffc107;" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+          <div class="d-flex">
+            <div class="toast-body">
+              已复制
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+
+    
+      
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+    <!-- JSZip JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js" integrity="sha512-xQBQYt9UcgblF6aCMrwU1NkVA7HCXaSN2oq0so80KO+y68M+n64FOcqgav4igHe6D5ObBLIf68DWv+gfBowczg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- PptxGenJS JS -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.9.0/libs/jszip.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.9.0/dist/pptxgen.min.js"></script>
+    
+    <!-- PPT生成主逻辑 -->
+    <script type="text/javascript">
+      // 为Date原型添加日期格式化方法
+      Date.prototype.format = function(fmt) {
+          var o = {
+              "M+" : this.getMonth()+1,                 //月份 
+              "d+" : this.getDate(),                    //日 
+              "h+" : this.getHours(),                   //小时 
+              "m+" : this.getMinutes(),                 //分 
+              "s+" : this.getSeconds(),                 //秒 
+              "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+              "S"  : this.getMilliseconds()             //毫秒 
+          };
+          if(/(y+)/.test(fmt)) {
+                  fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+          }
+          for(var k in o) {
+              if(new RegExp("("+ k +")").test(fmt)){
+                  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+              }
+          }
+          return fmt;
+      }
+
+      // 输入解析。移除一些多余的换行、空格
+      function parse_lyrics(text) {
+        let paras = text.trim().replaceAll(/ *(\n *){2,}/g, "\n\n").split("\n\n").filter(item => item);
+        console.log("paras: " + paras);
+        let lyrics = [];
+        let char_cnt = {"你": 0, "祢": 0, "他": 0, "祂": 0};
+        for (let para of paras) {
+          let ary = para.replaceAll(/ *\n */g, "\n").split("\n");
+          console.log(ary);
+          lyrics.push([ary[0], ary.slice(1).join("\n"), "(END)"]);
+          for (let key in char_cnt) {
+            char_cnt[key] += (para.match(new RegExp(key, "g")) || []).length;
+          }
+        }
+        for (let i = 0; i < lyrics.length - 1; i++) {
+          lyrics[i][2] = "(" + lyrics[i+1][0] + ")";
+        }
+        return [lyrics.length != 0, lyrics, char_cnt];
+      }
+
+      // 生成PPT
+      function generate_ppt(text) {
+        let [status, lyrics, char_cnt] = parse_lyrics(text);
+        if (status) {
+          console.log("lyrics:\n" + lyrics);
+
+          // 歌词位置 & 每页歌词
+          var lyrics_centering = true;
+          if (document.getElementById("btnradio1").checked === false) {
+            lyrics_centering = false;
+          }
+          console.log("lyrics_centering:" + lyrics_centering);
+          
+          var lyrics_numbering = -1;
+          if (document.getElementById("btnradio3").checked == false) {
+            lyrics_numbering = 2;
+          }
+          console.log("lyrics_numbering:" + lyrics_numbering);
+          
+          if (lyrics_numbering > 0) {
+            let new_lyrics = []
+            for (var i = 0; i < lyrics.length; i++) {
+              var [cur_no, cur_lyr, nxt_no] = lyrics[i];
+              if (cur_lyr === "") {
+                new_lyrics.push([cur_no, cur_lyr, nxt_no]);
+                continue;
+              }
+              
+              var lines = cur_lyr.split("\n");
+              var l_tag = "-", r_tag = "-";
+              for (var j = 0; j < lines.length; j += 2) {
+                if (j == 0) {
+                  l_tag = cur_no;
+                } else {
+                  l_tag = "-";
+                }
+                if (j == lines.length-1 || j == lines.length-2) {
+                  r_tag = nxt_no;
+                } else {
+                  r_tag = "-";
+                }
+                if (j == lines.length-1) {
+                  new_lyrics.push([l_tag, lines[j], r_tag]);
+                } else {
+                  new_lyrics.push([l_tag, lines[j] + "\n" + lines[j+1], r_tag]);
+                }
+              }
+            }
+            lyrics = new_lyrics;
+          }
+          
+
+          let pptx = new PptxGenJS();
+          pptx.layout = "LAYOUT_WIDE"; // 布局：LAYOUT_16x10, LAYOUT_4x3
+
+          for (let para of lyrics) {
+            let slide = pptx.addSlide();
+            slide.background = { color: "000000" };
+            // 歌词
+            slide.addText(para[1], {
+                x: "0%",
+                y: lyrics_centering ? "6%" : "3%",
+                w: "100%",
+                h: "80%",
+                color: "FFFFFF",
+                lang: "zh-CN",
+                charSpacing: 2, // 字符间距：1-256
+                lineSpacingMultiple: 1.4, // 行间距（倍）：0.0-9.99
+                fontFace: "Heiti",
+                bold: true,
+                fontSize: 42,
+                valign: lyrics_centering ? "center" : "top",
+                align: "center",
+            });
+            // 当前段落标记
+            slide.addText(para[0], {
+                x: "2%",
+                y: "87%",
+                w: "20%",
+                h: "10%",
+                color: "FFFFFF",
+                lang: "zh-CN",
+                charSpacing: 2, // 字符间距：1-256
+                lineSpacingMultiple: 1.2, // 行间距（倍）：0.0-9.99
+                fontFace: "Calibri",
+                bold: false,
+                fontSize: 24,
+                valign: "top",
+                align: "left",
+            });
+            // 下一段落标记
+            slide.addText(para[2], {
+                x: "78%",
+                y: "87%",
+                w: "20%",
+                h: "10%",
+                color: "FFFFFF",
+                lang: "zh-CN",
+                charSpacing: 2, // 字符间距：1-256
+                lineSpacingMultiple: 1.2, // 行间距（倍）：0.0-9.99
+                fontFace: "Calibri",
+                bold: false,
+                fontSize: 24,
+                valign: "top",
+                align: "right",
+            });
+          }
+          
+          if (confirm("请仔细校对一遍（字符统计：你="+char_cnt["你"]+"，祢="+char_cnt["祢"]+"，他="+char_cnt["他"]+"，祂="+char_cnt["祂"]+"）")) {
+            pptx.writeFile({ fileName: "歌词"+(new Date()).format("yyyy-MM-dd")+".pptx" });
+          } else {
+            console.log("Nothing.");
+          }
+        } else {
+          alert("输入错误：lyrics.length == "+lyrics.length);
+        }
+      };
+    </script>
+
+    <!-- 歌词库 -->
+    <script src="assets/lyrics.js"></script>
+    <script type="text/javascript">
+
+      function click_copy(text) {
+        console.log(text);
+        const mySmartTextarea = document.createElement("textarea");
+        mySmartTextarea.innerHTML = "\n" + text.replaceAll("<br>", "\n") + "\n";
+        document.body.appendChild(mySmartTextarea);
+        mySmartTextarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(mySmartTextarea);
+      };
+
+      console.log("lyricsLibrary.length: " + lyricsLibrary.length);
+      var lyricsListGroup = document.getElementById("lyricsLibrarySidebar");
+      for (var i = 0; i < lyricsLibrary.length; i++) {
+        var title = lyricsLibrary[i].split("\n")[0];
+        var text = lyricsLibrary[i].split("\n\n").slice(1).join("\n\n");
+        lyricsListGroup.insertAdjacentHTML("beforeend", 
+        "<button type=\"button\" class=\"list-group-item list-group-item-action\" onclick=\"click_copy(document.getElementById('item${i}').innerHTML)\"> \
+          <h6 class=\"mb-1\">${title}</h6> \
+          <small style=\"font-size:10px\" class=\"text-muted\" id=\"item${i}\">${text}</small> </button>"
+          .replaceAll("${i}", i.toString())
+          .replaceAll("${title}", title)
+          .replaceAll("${text}", text.replaceAll("\n", "<br>"))
+        );
+      }
+
+      const triggerList = document.querySelectorAll("button[class~=list-group-item]")
+      const toastLive = document.getElementById("liveToast")
+      triggerList.forEach(triggerEl => {
+        triggerEl.addEventListener("click", event => {
+          event.preventDefault();
+          const toast = new bootstrap.Toast(toastLive);
+          toast.show();
+        })
+      });
+
+    </script>
+  </body>
+</html>
+
+<!-- 
+文档：
+1. Bootstrap：https://getbootstrap.com/docs/5.1/customize/overview/
+2. PptxGenJS：https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create/
+3. - 页面样式文档：https://gitbrent.github.io/PptxGenJS/docs/api-text/
+4. JS string方法：https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+ -->
