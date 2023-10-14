@@ -49,12 +49,35 @@
           
           <br/>
 
+          <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+            <button class="btn btn-outline-secondary" type="button" disabled>歌词位置</button>
+
+            <input type="radio" class="btn-check" name="btnradio11" id="btnradio1" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio1">居中</label>
+          
+            <input type="radio" class="btn-check" name="btnradio11" id="btnradio2" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio2">置顶</label>
+          </div>
+
+          <div class="btn-group btn-group-sm" role="group" aria-label="Small button group" style="margin-left: 30px;">
+            <button class="btn btn-outline-secondary" type="button" disabled>每页歌词</button>
+
+            <input type="radio" class="btn-check" name="btnradio22" id="btnradio3" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="btnradio3">完整</label>
+          
+            <input type="radio" class="btn-check" name="btnradio22" id="btnradio4" autocomplete="off">
+            <label class="btn btn-outline-primary" for="btnradio4">2句</label>
+          </div>
+
+          <br/><br/>
+
           <button type="button" class="btn btn-success" id="generate" onclick="generate_ppt(document.getElementById('lyrics').value);">生成PPT</button>
 
           <button type="button" class="btn btn-warning" style="margin-left: 30px;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">歌词库</button>
           
         </div>
 
+        
         <div class="col-3"></div>
 
         <div class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
@@ -146,6 +169,52 @@
         if (status) {
           console.log("lyrics:\n" + lyrics);
 
+          // 歌词位置 & 每页歌词
+          var lyrics_centering = true;
+          if (document.getElementById("btnradio1").checked === false) {
+            lyrics_centering = false;
+          }
+          console.log("lyrics_centering:" + lyrics_centering);
+          
+          var lyrics_numbering = -1;
+          if (document.getElementById("btnradio3").checked == false) {
+            lyrics_numbering = 2;
+          }
+          console.log("lyrics_numbering:" + lyrics_numbering);
+          
+          if (lyrics_numbering > 0) {
+            let new_lyrics = []
+            for (var i = 0; i < lyrics.length; i++) {
+              var [cur_no, cur_lyr, nxt_no] = lyrics[i];
+              if (cur_lyr === "") {
+                new_lyrics.push([cur_no, cur_lyr, nxt_no]);
+                continue;
+              }
+              
+              var lines = cur_lyr.split("\n");
+              var l_tag = "-", r_tag = "-";
+              for (var j = 0; j < lines.length; j += 2) {
+                if (j == 0) {
+                  l_tag = cur_no;
+                } else {
+                  l_tag = "-";
+                }
+                if (j == lines.length-1 || j == lines.length-2) {
+                  r_tag = nxt_no;
+                } else {
+                  r_tag = "-";
+                }
+                if (j == lines.length-1) {
+                  new_lyrics.push([l_tag, lines[j], r_tag]);
+                } else {
+                  new_lyrics.push([l_tag, lines[j] + "\n" + lines[j+1], r_tag]);
+                }
+              }
+            }
+            lyrics = new_lyrics;
+          }
+          
+
           let pptx = new PptxGenJS();
           pptx.layout = "LAYOUT_WIDE"; // 布局：LAYOUT_16x10, LAYOUT_4x3
 
@@ -155,7 +224,7 @@
             // 歌词
             slide.addText(para[1], {
                 x: "0%",
-                y: "6%",
+                y: lyrics_centering ? "6%" : "3%",
                 w: "100%",
                 h: "80%",
                 color: "FFFFFF",
@@ -165,7 +234,7 @@
                 fontFace: "Heiti",
                 bold: true,
                 fontSize: 42,
-                valign: "center",
+                valign: lyrics_centering ? "center" : "top",
                 align: "center",
             });
             // 当前段落标记
@@ -202,8 +271,11 @@
             });
           }
           
-          alert("请仔细校对一遍（字符统计：你="+char_cnt["你"]+"，祢="+char_cnt["祢"]+"，他="+char_cnt["他"]+"，祂="+char_cnt["祂"]+"）");
-          pptx.writeFile({ fileName: "歌词"+(new Date()).format("yyyy-MM-dd")+".pptx" });
+          if (confirm("请仔细校对一遍（字符统计：你="+char_cnt["你"]+"，祢="+char_cnt["祢"]+"，他="+char_cnt["他"]+"，祂="+char_cnt["祂"]+"）")) {
+            pptx.writeFile({ fileName: "歌词"+(new Date()).format("yyyy-MM-dd")+".pptx" });
+          } else {
+            console.log("Nothing.");
+          }
         } else {
           alert("输入错误：lyrics.length == "+lyrics.length);
         }
