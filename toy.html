@@ -222,7 +222,10 @@
             let slide = pptx.addSlide();
             slide.background = { color: "000000" };
             // 歌词
-            slide.addText(para[1], {
+            slide.addText(
+              // para[1],
+              para[1].indexOf("\n")>-1 ? para[1] : ("\n"+para[1]), // 处理单行歌词的情况
+              {
                 x: "0%",
                 y: lyrics_centering ? "6%" : "0%",
                 w: "100%",
@@ -230,7 +233,7 @@
                 color: "FFFFFF",
                 lang: "zh-CN",
                 charSpacing: 2, // 字符间距：1-256
-                lineSpacingMultiple: 1.4, // 行间距（倍）：0.0-9.99
+                lineSpacingMultiple: 1.2, // 行间距（倍）：0.0-9.99
                 fontFace: "Heiti",
                 bold: true,
                 fontSize: 42,
