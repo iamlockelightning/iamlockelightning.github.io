@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: main_default
 ---
 
 Hi, I am Chengjiang, a 3rd-year graduate student in the Department of Computer Science and Technology at Tsinghua University. My research interests include **knowledge graph** and **cross-lingual entity alignment**. And my advisor is Prof. [Juanzi Li](http://keg.cs.tsinghua.edu.cn/persons/ljz/).
