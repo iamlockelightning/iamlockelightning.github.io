@@ -17,8 +17,8 @@
 
     <nav class="navbar navbar-light bg-light d-flex justify-content-start" id="nav_bar">
       <div style="padding-left: 10px;">
-      <a href="/toy" class="btn btn-outline-danger btn-sm">歌词</a>
-      <a href="/count" class="btn btn-outline-success btn-sm">倒计时</a>
+      <a href="/toy" class="btn btn-outline-danger btn-sm">Lyrics</a>
+      <a href="/count" class="btn btn-outline-success btn-sm">CountDown</a>
       <!-- <a href="#" class="btn btn-outline-warning btn-sm">抽签</a> -->
       <!-- <a href="#" class="btn btn-outline-primary btn-sm">op 4</a>
       <a href="#" class="btn btn-outline-dark btn-sm">op 5</a> -->
@@ -29,8 +29,8 @@
       <div class="row justify-content-md-center">
         <div class="col-6">
           
-          <h3>歌词排版工具</h3>
-          <p>请将歌词<strong>调整</strong>为如下格式的文本（使用<code>command+F(ctrl+F)</code>从<strong>歌词库</strong>搜索，单击<strong>复制</strong>），<strong>粘贴</strong>到下方“歌词输入框”，<strong>点击</strong>生成按钮，即可。<small style="color:red">（首行为段落标记；以空行分隔不同页面的内容）</small></p>
+          <h3>Lyrics</h3>
+          <p>请将歌词<strong>调整</strong>为如下格式的文本（使用<code>command+F(ctrl+F)</code>从<strong>Collections</strong>搜索，单击<strong>复制</strong>），<strong>粘贴</strong>到下方“歌词输入框”，<strong>点击</strong>生成按钮，即可。<small style="color:red">（首行为段落标记；以空行分隔不同页面的内容）</small></p>
           <pre style="font-size: 10px">- - - 下面为示例👇 - - -
 1
 
@@ -44,13 +44,13 @@
 - - - 上面为示例👆 - - -</pre>
           <div class="form-floating">
             <textarea class="form-control" placeholder="歌词" id="lyrics" style="height: 400px"></textarea>
-            <label for="lyrics">歌词输入框</label>
+            <label for="lyrics">输入框</label>
           </div>
           
           <br/>
 
           <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-            <button class="btn btn-outline-secondary" type="button" disabled>歌词位置</button>
+            <button class="btn btn-outline-secondary" type="button" disabled>位置</button>
 
             <input type="radio" class="btn-check" name="btnradio11" id="btnradio1" autocomplete="off">
             <label class="btn btn-outline-primary" for="btnradio1">居中</label>
@@ -60,7 +60,7 @@
           </div>
 
           <div class="btn-group btn-group-sm" role="group" aria-label="Small button group" style="margin-left: 30px;">
-            <button class="btn btn-outline-secondary" type="button" disabled>每页歌词</button>
+            <button class="btn btn-outline-secondary" type="button" disabled>每页</button>
 
             <input type="radio" class="btn-check" name="btnradio22" id="btnradio3" autocomplete="off" checked>
             <label class="btn btn-outline-primary" for="btnradio3">完整</label>
@@ -82,7 +82,7 @@
 
         <div class="offcanvas offcanvas-end show" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
           <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">歌词库</h5>
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Collections</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
