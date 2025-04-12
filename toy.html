@@ -289,10 +289,11 @@
     <script src="assets/lyrics.js"></script>
     <script type="text/javascript">
 
-      function click_copy(text) {
+      function click_copy(title, text) {
+        console.log(title);
         console.log(text);
         const mySmartTextarea = document.createElement("textarea");
-        mySmartTextarea.innerHTML = "\n" + text.replaceAll("<br>", "\n") + "\n";
+        mySmartTextarea.innerHTML = title + "\n" + "\n" + text.replaceAll("<br>", "\n") + "\n";
         document.body.appendChild(mySmartTextarea);
         mySmartTextarea.select();
         document.execCommand("copy");
@@ -305,7 +306,7 @@
         var title = lyricsLibrary[i].split("\n")[0];
         var text = lyricsLibrary[i].split("\n\n").slice(1).join("\n\n");
         lyricsListGroup.insertAdjacentHTML("beforeend", 
-        "<button type=\"button\" class=\"list-group-item list-group-item-action\" onclick=\"click_copy(document.getElementById('item${i}').innerHTML)\"> \
+        "<button type=\"button\" class=\"list-group-item list-group-item-action\" onclick=\"click_copy('${title}', document.getElementById('item${i}').innerHTML)\"> \
           <h6 class=\"mb-1\">${title}</h6> \
           <small style=\"font-size:10px\" class=\"text-muted\" id=\"item${i}\">${text}</small> </button>"
           .replaceAll("${i}", i.toString())
